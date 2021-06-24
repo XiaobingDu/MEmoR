@@ -7,7 +7,7 @@ class ScaledDotProductAttention(nn.Module):
     """ Scaled Dot-Product Attention """
 
     def __init__(self, temperature, attn_dropout=0.1):
-        super().__init__()
+        super(self).__init__()
         self.temperature = temperature
         self.dropout = nn.Dropout(attn_dropout)
 
@@ -26,7 +26,7 @@ class ScaledDotProductAttention(nn.Module):
 
 class AMER(BaseModel):
     def __init__(self, config):
-        super().__init__()
+        super(self).__init__()
 
     def initialize(self, config, device):
 

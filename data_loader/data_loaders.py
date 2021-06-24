@@ -13,7 +13,7 @@ EMOTIONS = ["neutral","joy","anger","disgust","sadness","surprise","fear","antic
 class MEmoRDataset(data.Dataset):
     
     def __init__(self, config):
-        super().__init__()
+        super(self).__init__()
         self.config = config
         annos = read_json(config['anno_file'])[config['emo_type']]
         # ids = []
@@ -125,7 +125,7 @@ class MEmoRDataLoader(BaseDataLoader):
         self.seed = data_loader_config['seed']
         self.dataset = MEmoRDataset(config)
         self.emotion_nums = self.dataset.statistics()
-        super().__init__(self.dataset, data_loader_config['batch_size'], data_loader_config['shuffle'], data_loader_config['validation_split'], data_loader_config['num_workers'], collate_fn=self.dataset.collate_fn)
+        super(self).__init__(self.dataset, data_loader_config['batch_size'], data_loader_config['shuffle'], data_loader_config['validation_split'], data_loader_config['num_workers'], collate_fn=self.dataset.collate_fn)
 
     def _split_sampler(self, split):
         if split == 0.0:
