@@ -125,7 +125,7 @@ class MEmoRDataLoader(BaseDataLoader):
         self.seed = data_loader_config['seed']
         self.dataset = MEmoRDataset(config)
         self.emotion_nums = self.dataset.statistics()
-        super(self).__init__(self.dataset, data_loader_config['batch_size'], data_loader_config['shuffle'], data_loader_config['validation_split'], data_loader_config['num_workers'], collate_fn=self.dataset.collate_fn)
+        super().__init__(self.dataset, data_loader_config['batch_size'], data_loader_config['shuffle'], data_loader_config['validation_split'], data_loader_config['num_workers'], collate_fn=self.dataset.collate_fn)
 
     def _split_sampler(self, split):
         if split == 0.0:
