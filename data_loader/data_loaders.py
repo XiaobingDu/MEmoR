@@ -47,7 +47,7 @@ class MEmoRDataset(data.Dataset):
         self.personality_features = []
         
 
-        for jj, anno in enumerate(tqdm(annos)):
+        for jj, anno in enumerate(tqdm(annos)): #annos 所有的标注信息
             clip = anno['clip']
             target_character = anno['character']
             target_moment = anno['moment']
@@ -145,7 +145,7 @@ class MEmoRDataLoader(BaseDataLoader):
 
         valid_idx = idx_full[0:len_valid]
         train_idx = np.delete(idx_full, np.arange(0, len_valid))
-        weights_per_class = 1. / torch.tensor(self.emotion_nums, dtype=torch.float)
+        weights_per_class = 1. / torch.tensor(self.emotion_nums, dtype=torch.float) #每一个情绪类别的权重
         weights = [0] * self.n_samples
         for idx in range(self.n_samples):
             if idx in valid_idx:

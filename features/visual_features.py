@@ -40,7 +40,7 @@ class VisualFeatureExtractor(BaseFeatureExtractor):
             for character in on_characters:
                 for ii in range(len(seg_start)):
                     begin_sec, end_sec = seg_start[ii] - overall_start, seg_end[ii] - overall_start
-                    begin_idx, end_idx = int(begin_sec * fps), int(end_sec * fps)
+                    begin_idx, end_idx = int(begin_sec * fps), int(end_sec * fps) #idx指的是frame的index
                     character_face_feature = []
                     for jj, image_name in enumerate(faces_image_names):
                         idx, person = tuple(image_name[:-4].split('_'))

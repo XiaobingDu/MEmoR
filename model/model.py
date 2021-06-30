@@ -1,3 +1,5 @@
+#-*-coding:utf-8-*-
+
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -76,7 +78,7 @@ class AMER(BaseModel):
 
         self.fusion_layer = nn.Linear(unified_d, 4 * D_e)
 
-    def forward(self, U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c):
+    def forward(self, U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c): #M_v: mask_v
         # Encoders
         V_e, A_e, T_e, P_e = self.enc_v(U_v), self.enc_a(U_a), self.enc_t(U_t), self.enc_p(U_p)
 
@@ -100,23 +102,24 @@ class AMER(BaseModel):
             mask_A = M_a[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
 
             # Concat with personality embedding
-            inp_V = torch.cat([inp_V, inp_P], dim=2)
+            inp_V = torch.cat([inp_V, inp_P], dim=2) #将V，A，T与P组合，然后下一步进行 modality-level attention
             inp_A = torch.cat([inp_A, inp_P], dim=2)
             inp_T = torch.cat([inp_T, inp_P], dim=2)
 
             U = []
 
-            for k in range(n_c[i]):
+            for k in range(n_c[i]): # 对于每一个character
                 new_inp_A, new_inp_T, new_inp_V = inp_A.clone(), inp_T.clone(), inp_V.clone(),
                 
                 # Modality-level inter-personal attention
-                for j in range(seg_len[i]):
+                for j in range(seg_len[i]): #对于每一个moment
                     att_V, _ = self.attn(inp_V[j, :], inp_V[j, :], inp_V[j, :], mask_V[j, :])
                     att_T, _ = self.attn(inp_T[j, :], inp_T[j, :], inp_T[j, :], mask_T[j, :])
                     att_A, _ = self.attn(inp_A[j, :], inp_A[j, :], inp_A[j, :], mask_A[j, :])
                     new_inp_V[j, :] = att_V + inp_V[j, :]
                     new_inp_A[j, :] = att_A + inp_A[j, :]
                     new_inp_T[j, :] = att_T + inp_T[j, :]
+                    #对于每一个moment j ，得到的new_inp_V的每一行代表一个moment的inter-person attention
 
                 # Modality-level intra-personal attention
                 att_V, _ = self.attn(new_inp_V[:, k], new_inp_V[:, k], new_inp_V[:, k], mask_V[:, k])

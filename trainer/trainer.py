@@ -3,7 +3,6 @@ from base import BaseTrainer
 import datetime
 from utils import inf_loop, MetricTracker
 
-########################
 class MEmoRTrainer(BaseTrainer):
     def __init__(self, model, criterion, metric_ftns, config, data_loader,
                  valid_data_loader=None, len_epoch=None):
