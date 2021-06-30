@@ -4,7 +4,7 @@ from base import BaseFeatureExtractor
 
 class AudioFeatureExtractor(BaseFeatureExtractor):
     def __init__(self, config):
-        super(self).__init__()
+        super().__init__()
         print("Initializing AudioFeatureExtracor...")
         self.feature_dim = config["audio"]["feature_dim"]
         self.feature_file = config["audio"]["feature_file"]
