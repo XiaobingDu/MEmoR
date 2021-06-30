@@ -1,10 +1,10 @@
 {
-    "name": "Test_14", //"Test_9",
+    "name": "Test_14",
     "message":"MEmoR Baseline",
     "anno_file": "../data/anno.json",
     "data_file": "../data/data.json",
     "id_file": "../data/test_id.txt",
-    "emo_type": "fine_grained",//"primary",
+    "emo_type": "fine_grained",
     "speakers": ["sheldon", "leonard", "howard", "rajesh", "penny", "bernadette", "amy", "others"],
     "audio": {
         "feature_file": "../data/features/audio_features.json",
