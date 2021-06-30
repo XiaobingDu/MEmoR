@@ -6,7 +6,7 @@ from utils import inf_loop, MetricTracker
 class MEmoRTrainer(BaseTrainer):
     def __init__(self, model, criterion, metric_ftns, config, data_loader,
                  valid_data_loader=None, len_epoch=None):
-        super(self).__init__(model, criterion, metric_ftns, config)
+        super().__init__(model, criterion, metric_ftns, config)
         self.config = config
         self.data_loader = data_loader
         if len_epoch is None:
