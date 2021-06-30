@@ -13,7 +13,7 @@ EMOTIONS = ["neutral","joy","anger","disgust","sadness","surprise","fear","antic
 class MEmoRDataset(data.Dataset):
     
     def __init__(self, config):
-        super(self).__init__()
+        super().__init__()
         self.config = config
         annos = read_json(config['anno_file'])[config['emo_type']]
         # ids = []
