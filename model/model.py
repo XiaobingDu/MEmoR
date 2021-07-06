@@ -93,25 +93,27 @@ class AMER(BaseModel):
                 if target_loc[i][j] == 1:
                     target_moment = j % int(seg_len[i].cpu().numpy())
                     target_character = int(j / seg_len[i].cpu().numpy())
-                    print('target_moment shape...', target_moment)
-                    print('target_character shape...', target_character)
+                    print('target_moment...', target_moment) #2
+                    print('target_character...', target_character) #1
                     break
             
+            print('seq_len shape....', seq_lengths.shape)
+            print('n_c shape....', n_c.shape)
             inp_V = V_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_T = T_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_A = A_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_P = P_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
-            print('inp_V shape...',inp_V.shape)
-            print('inp_T shape...',inp_T.shape)
-            print('inp_A shape...', inp_A.shape)
-            print('inp_P shape...', inp_P.shape)
+            print('inp_V shape...',inp_V.shape) #（5，3，256）
+            print('inp_T shape...',inp_T.shape) #（5，3，256）
+            print('inp_A shape...', inp_A.shape) #（5，3，256）
+            print('inp_P shape...', inp_P.shape) #（5，3，256）
 
             mask_V = M_v[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
             mask_T = M_t[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
             mask_A = M_a[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
-            print('mask_V shape...', mask_V.shape)
-            print('mask_T shape...',mask_T.shape)
-            print('mask_A shape...',mask_A.shape)
+            print('mask_V shape...', mask_V.shape) #(5,3)
+            print('mask_T shape...',mask_T.shape) #(5,3)
+            print('mask_A shape...',mask_A.shape) #(5,3)
 
             # Concat with personality embedding
             inp_V = torch.cat([inp_V, inp_P], dim=2) #将V，A，T与P组合，然后下一步进行 modality-level attention
@@ -120,10 +122,12 @@ class AMER(BaseModel):
 
             U = []
 
+            print('n_c shape....', n_c.shape)
             for k in range(n_c[i]): # 对于每一个character
                 new_inp_A, new_inp_T, new_inp_V = inp_A.clone(), inp_T.clone(), inp_V.clone(),
                 
                 # Modality-level inter-personal attention
+                print('seg_len shape...', seg_len.shape)
                 for j in range(seg_len[i]): #对于每一个moment
                     att_V, _ = self.attn(inp_V[j, :], inp_V[j, :], inp_V[j, :], mask_V[j, :])
                     att_T, _ = self.attn(inp_T[j, :], inp_T[j, :], inp_T[j, :], mask_T[j, :])
