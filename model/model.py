@@ -97,8 +97,8 @@ class AMER(BaseModel):
                     print('target_character...', target_character) #1
                     break
             
-            print('seq_len shape....', seq_lengths.shape)
-            print('n_c shape....', n_c.shape)
+            print('seq_len shape....', len(seq_lengths))
+            print('n_c shape....', len(n_c))
             inp_V = V_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_T = T_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_A = A_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
@@ -122,12 +122,12 @@ class AMER(BaseModel):
 
             U = []
 
-            print('n_c shape....', n_c.shape)
+            print('n_c shape....', len(n_c))
             for k in range(n_c[i]): # 对于每一个character
                 new_inp_A, new_inp_T, new_inp_V = inp_A.clone(), inp_T.clone(), inp_V.clone(),
                 
                 # Modality-level inter-personal attention
-                print('seg_len shape...', seg_len.shape)
+                print('seg_len shape...', len(seg_len))
                 for j in range(seg_len[i]): #对于每一个moment
                     att_V, _ = self.attn(inp_V[j, :], inp_V[j, :], inp_V[j, :], mask_V[j, :])
                     att_T, _ = self.attn(inp_T[j, :], inp_T[j, :], inp_T[j, :], mask_T[j, :])
