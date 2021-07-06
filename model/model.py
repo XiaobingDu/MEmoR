@@ -33,11 +33,11 @@ class AMER(BaseModel):
     def initialize(self, config, device):
 
         n_classes = 9 if config['emo_type'] == 'primary' else 14
-        D_e = config["model"]["args"]["D_e"]
-        D_v = config["visual"]["dim_env"] + config["visual"]["dim_face"] + config["visual"]["dim_obj"]
-        D_a = config["audio"]["feature_dim"]
-        D_t = config["text"]["feature_dim"]
-        D_p = config["personality"]["feature_dim"]
+        D_e = config["model"]["args"]["D_e"] #128
+        D_v = config["visual"]["dim_env"] + config["visual"]["dim_face"] + config["visual"]["dim_obj"] #4302
+        D_a = config["audio"]["feature_dim"] #6373
+        D_t = config["text"]["feature_dim"]  #1024
+        D_p = config["personality"]["feature_dim"] #118
         
         self.attn = ScaledDotProductAttention((4 * D_e) ** 0.5, attn_dropout=0)
 
@@ -80,22 +80,31 @@ class AMER(BaseModel):
 
     def forward(self, U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c): #M_v: mask_v
         # Encoders
-        V_e, A_e, T_e, P_e = self.enc_v(U_v), self.enc_a(U_a), self.enc_t(U_t), self.enc_p(U_p)
+        V_e, A_e, T_e, P_e = self.enc_v(U_v), self.enc_a(U_a), self.enc_t(U_t), self.enc_p(U_p) #256
 
         U_all = []
-
+        print('m_v shape...',M_v.shape)
+        print('m_a shape...', M_a.shape)
+        print('m_t shape...', M_t.shape)
+        print('target_loc shape...', target_loc.shape)
         for i in range(M_v.shape[0]):
             target_moment, target_character = -1, -1
             for j in range(target_loc.shape[1]):
                 if target_loc[i][j] == 1:
                     target_moment = j % int(seg_len[i].cpu().numpy())
                     target_character = int(j / seg_len[i].cpu().numpy())
+                    print('target_moment shape...', target_moment.shape)
+                    print('target_character shape...', target_character.shape)
                     break
             
             inp_V = V_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_T = T_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_A = A_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_P = P_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
+            print('inp_V shape...',inp_V.shape)
+            print('inp_T shape...',inp_T.shape)
+            print('inp_A shape...', inp_A.shape)
+            print('inp_P shape...', inp_P.shape)
 
             mask_V = M_v[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
             mask_T = M_t[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
