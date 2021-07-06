@@ -83,18 +83,18 @@ class AMER(BaseModel):
         V_e, A_e, T_e, P_e = self.enc_v(U_v), self.enc_a(U_a), self.enc_t(U_t), self.enc_p(U_p) #256
 
         U_all = []
-        print('m_v shape...',M_v.shape)
-        print('m_a shape...', M_a.shape)
-        print('m_t shape...', M_t.shape)
-        print('target_loc shape...', target_loc.shape)
+        print('m_v shape...',M_v.shape) #(8,15)
+        print('m_a shape...', M_a.shape) #(8,15)
+        print('m_t shape...', M_t.shape) #(8,15)
+        print('target_loc shape...', target_loc.shape) #(8,15)
         for i in range(M_v.shape[0]):
             target_moment, target_character = -1, -1
             for j in range(target_loc.shape[1]):
                 if target_loc[i][j] == 1:
                     target_moment = j % int(seg_len[i].cpu().numpy())
                     target_character = int(j / seg_len[i].cpu().numpy())
-                    print('target_moment shape...', target_moment.shape)
-                    print('target_character shape...', target_character.shape)
+                    print('target_moment shape...', target_moment)
+                    print('target_character shape...', target_character)
                     break
             
             inp_V = V_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
@@ -109,6 +109,9 @@ class AMER(BaseModel):
             mask_V = M_v[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
             mask_T = M_t[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
             mask_A = M_a[i, : seq_lengths[i]].reshape((n_c[i], seg_len[i])).transpose(0, 1)
+            print('mask_V shape...', mask_V.shape)
+            print('mask_T shape...',mask_T.shape)
+            print('mask_A shape...',mask_A.shape)
 
             # Concat with personality embedding
             inp_V = torch.cat([inp_V, inp_P], dim=2) #将V，A，T与P组合，然后下一步进行 modality-level attention
