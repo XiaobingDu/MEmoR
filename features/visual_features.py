@@ -37,6 +37,7 @@ class VisualFeatureExtractor(BaseFeatureExtractor):
             face_features = torch.load(os.path.join(self.faces_features_dir, clip+'.pt'), map_location='cpu')
             obj_features = torch.load(os.path.join(self.obj_feature_dir, clip+'.pt'), map_location='cpu')
             env_features = torch.load(os.path.join(self.env_features_dir, clip+'.pt'), map_location='cpu')
+            print('***face_features shape...',face_features.shape)
             for character in on_characters:
                 for ii in range(len(seg_start)):
                     begin_sec, end_sec = seg_start[ii] - overall_start, seg_end[ii] - overall_start
@@ -50,10 +51,13 @@ class VisualFeatureExtractor(BaseFeatureExtractor):
                     
                     if face_num > threshold:
                         ret_in = []
+                        print('character_face_feature shape....',character_face_feature.shape)
+                        print('obj_features shape...',obj_features.shape)
+                        print('env_features shape...', env_features.shape)
                         ret_in.append(torch.mean(torch.stack(character_face_feature), dim=0))
                         ret_in.append(torch.mean(obj_features[begin_idx:end_idx, :], dim=0))
                         ret_in.append(torch.mean(env_features[begin_idx:end_idx, :], dim=0))
-                        # print(torch.cat(ret_in).shape)
+                        print('torch.cat(ret_in) shape...',torch.cat(ret_in).shape)
                         ret.append(torch.cat(ret_in))
                         ret_valid.append(1)
                     else:
