@@ -83,14 +83,14 @@ class AMER(BaseModel):
         V_e, A_e, T_e, P_e = self.enc_v(U_v), self.enc_a(U_a), self.enc_t(U_t), self.enc_p(U_p) #256
 
         U_all = []
-        print('U_v shape...', U_v.shape)
-        print('U_a shape...', U_a.shape)
-        print('U_t shape...', U_t.shape)
-        print('U_p shape...', U_p.shape)
-        print('V_e shape...', V_e.shape)
-        print('A_e shape...', A_e.shape)
-        print('T_e shape...', T_e.shape)
-        print('P_e shape...', P_e.shape)
+        print('U_v shape...', U_v.shape) #[8, 15, 4302]
+        print('U_a shape...', U_a.shape) #[8, 15, 6373]
+        print('U_t shape...', U_t.shape) #[8, 15, 1024]
+        print('U_p shape...', U_p.shape) #[8, 15, 118]
+        print('V_e shape...', V_e.shape) #[8, 15, 256]
+        print('A_e shape...', A_e.shape) #[8, 15, 256]
+        print('T_e shape...', T_e.shape) #[8, 15, 256]
+        print('P_e shape...', P_e.shape) #[8, 15, 256]
         print('m_v shape...',M_v.shape) #(8,15)
         print('m_a shape...', M_a.shape) #(8,15)
         print('m_t shape...', M_t.shape) #(8,15)
@@ -105,8 +105,9 @@ class AMER(BaseModel):
                     print('target_character...', target_character) #1
                     break
             
-            print('seq_len shape....', len(seq_lengths))
-            print('n_c shape....', len(n_c))
+            print('seq_len shape....', len(seq_lengths)) #8
+            print ('****seq_lengths[i]...', seq_lengths)
+            print('n_c shape....', len(n_c)) #8
             inp_V = V_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_T = T_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_A = A_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
