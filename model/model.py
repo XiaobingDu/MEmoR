@@ -112,6 +112,9 @@ class AMER(BaseModel):
             inp_T = T_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_A = A_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
             inp_P = P_e[i, : seq_lengths[i], :].reshape((n_c[i], seg_len[i], -1)).transpose(0, 1)
+            print('***shape...',V_e[i, : seq_lengths[i], :].shape)
+            print('****n_c...', n_c)
+            print('****seg_len...', seg_len)
             print('inp_V shape...',inp_V.shape) #（5，3，256）
             print('inp_T shape...',inp_T.shape) #（5，3，256）
             print('inp_A shape...', inp_A.shape) #（5，3，256）
