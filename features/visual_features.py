@@ -32,12 +32,12 @@ class VisualFeatureExtractor(BaseFeatureExtractor):
             faces_image_names = fin.readline().strip().split('\t')
         
         threshold = 10
-
+        print('faces_image_names...', faces_image_names)
         if len(faces_image_names) > threshold:
             face_features = torch.load(os.path.join(self.faces_features_dir, clip+'.pt'), map_location='cpu')
             obj_features = torch.load(os.path.join(self.obj_feature_dir, clip+'.pt'), map_location='cpu')
             env_features = torch.load(os.path.join(self.env_features_dir, clip+'.pt'), map_location='cpu')
-            print('***face_features shape...',face_features.shape)
+            print('***face_features shape...',face_features.shape) #[513, 1024]
             for character in on_characters:
                 for ii in range(len(seg_start)):
                     begin_sec, end_sec = seg_start[ii] - overall_start, seg_end[ii] - overall_start
@@ -47,13 +47,14 @@ class VisualFeatureExtractor(BaseFeatureExtractor):
                         idx, person = tuple(image_name[:-4].split('_'))
                         if begin_idx <= int(idx) <= end_idx and person.lower() == self.speakers[character]:
                             character_face_feature.append(face_features[jj])
+                            print('face_features[jj] shape...', face_features[jj].shape)
                     face_num = len(character_face_feature)
                     
                     if face_num > threshold:
                         ret_in = []
-                        print('character_face_feature shape....',len(character_face_feature))
-                        print('obj_features shape...',obj_features.shape)
-                        print('env_features shape...', env_features.shape)
+                        print('character_face_feature....',len(character_face_feature)) #178
+                        print('obj_features shape...',obj_features.shape) #[432, 1230]
+                        print('env_features shape...', env_features.shape) #[432, 2048]
                         ret_in.append(torch.mean(torch.stack(character_face_feature), dim=0))
                         ret_in.append(torch.mean(obj_features[begin_idx:end_idx, :], dim=0))
                         ret_in.append(torch.mean(env_features[begin_idx:end_idx, :], dim=0))
