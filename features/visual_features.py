@@ -51,7 +51,7 @@ class VisualFeatureExtractor(BaseFeatureExtractor):
                     
                     if face_num > threshold:
                         ret_in = []
-                        print('character_face_feature shape....',character_face_feature.shape)
+                        print('character_face_feature shape....',len(character_face_feature))
                         print('obj_features shape...',obj_features.shape)
                         print('env_features shape...', env_features.shape)
                         ret_in.append(torch.mean(torch.stack(character_face_feature), dim=0))
